@@ -1,0 +1,28 @@
+# Web/PWA mode of Munder Difflin.
+#   cp .env.example .env   # then set WEB_TOKEN (openssl rand -hex 32)
+#   docker compose up --build
+# Open http://localhost:3900/?token=<WEB_TOKEN> once; the browser keeps a cookie after that.
+name: munder-difflin
+
+services:
+  web:
+    build:
+      context: .
+      args:
+        # Uncomment to bake agent CLIs into the image, e.g. "@anthropic-ai/claude-code".
+        # AGENT_CLI_PACKAGES: "@anthropic-ai/claude-code"
+        AGENT_CLI_PACKAGES: ""
+    image: munder-difflin-web:local
+    ports:
+      # Loopback on the host by default. Change to "3900:3900" only with WEB_TOKEN set.
+      - "127.0.0.1:${WEB_HOST_PORT:-3900}:3900"
+    environment:
+      WEB_TOKEN: ${WEB_TOKEN:?set WEB_TOKEN in .env (openssl rand -hex 32)}
+    volumes:
+      - munder-home:/data/home
+    # Chromium (inside Electron) needs more shared memory than Docker's 64 MB default.
+    shm_size: 1gb
+    restart: unless-stopped
+
+volumes:
+  munder-home:
