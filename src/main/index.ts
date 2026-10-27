@@ -1,3 +1,5 @@
+// Must stay the first import: it captures ipcMain registrations for the web bridge.
+import { attachWebWindow } from './webBridge';
 import { app, BrowserWindow, clipboard, dialog, ipcMain, Menu, powerMonitor, powerSaveBlocker, screen, shell, Notification } from 'electron';
 import { spawn } from 'node:child_process';
 import {
@@ -2344,6 +2346,7 @@ function createWindow(opts: { floor?: boolean } = {}): BrowserWindow {
   // Capture the webContents once: after 'closed' the window is gone, but this
   // reference stays valid as the per-PTY ownership key.
   const wc = win.webContents;
+  attachWebWindow(win); // no-op unless WEB_HEADLESS=1
 
   allWindows.add(win);
   // Global timer events follow the user — the most-recently-focused window is

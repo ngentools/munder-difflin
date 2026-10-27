@@ -1,0 +1,17 @@
+.git
+node_modules
+out
+dist
+web/dist
+graphify-out
+blog
+seo
+test
+evidence
+prototypes
+landing-remotion
+.claude
+.github
+.env
+.env.*
+*.log
